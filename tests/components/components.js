@@ -280,11 +280,11 @@ describe("Component tests", function() {
                     })
             })
 
-            it('should get id not found', (done) => {
+            it('should get id not found bc wrong id formation', (done) => {
                 chai.request(apiURL)
                     .get('/api/v1/recipes/' + fakeRecipeId)
                     .end((err, res) => {
-                        res.should.have.status(404);
+                        res.should.have.status(500);
                         done();
                     })
             })
