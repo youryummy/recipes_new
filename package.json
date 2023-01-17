@@ -1,5 +1,5 @@
 {
-    "name": "reccipes-service",
+    "name": "recipes-service",
     "version": "1.0.1",
     "description": "API of Recipes microservice",
     "license": "UNLICENSED",
