@@ -6,17 +6,17 @@ chai.should();
 
 let recipeId;
 let fakeRecipeId = "63c0162b0fbc7404c373c56e"
-let recipePOSTWrongName = { name: "", summary: "test_POST", duration: 1, steps: ["test_POST"], tags: ["test_POST"], createdBy:"test_POST", imageUrl:"test_POST", ingredients:[""] }
-let recipePOSTWrongSummary = { name: "test_POST", summary: "", duration: 1, steps: ["test_POST"], tags: ["test_POST"], createdBy:"test_POST", imageUrl:"test_POST", ingredients:[""] }
-let recipePOSTWrongDuration = { name: "test_POST", summary: "test_POST", duration: -20, steps: ["test_POST"], tags: ["test_POST"], createdBy:"test_POST", imageUrl:"test_POST", ingredients:[""] }
-let recipePOSTWrongNameAndDuration = { name: "", summary: "test_POST", duration: -1, steps: ["test_POST"], tags: ["test_POST"], createdBy:"test_POST", imageUrl:"test_POST",  ingredients:[""] }
-let recipePOSTWrongDurationAndSummary = { name: "Test", summary: "", duration: -1, steps: ["test_POST"], tags: ["test_POST"], createdBy:"test_POST", imageUrl:"test_POST", ingredients:[""] }
-let recipePOSTWrongNameAndSummary = { name: "", summary: "", duration: 1, steps: ["test_POST"], tags: ["test_POST"], createdBy:"test_POST", imageUrl:"test_POST", ingredients:[""] }
+let recipePOSTWrongName = { name: "", summary: "test_POST", duration: 1, steps: ["test_POST"], tags: ["test_POST"], createdBy:"test_POST", imageUrl:"test_POST" }
+let recipePOSTWrongSummary = { name: "test_POST", summary: "", duration: 1, steps: ["test_POST"], tags: ["test_POST"], createdBy:"test_POST", imageUrl:"test_POST" }
+let recipePOSTWrongDuration = { name: "test_POST", summary: "test_POST", duration: -20, steps: ["test_POST"], tags: ["test_POST"], createdBy:"test_POST", imageUrl:"test_POST" }
+let recipePOSTWrongNameAndDuration = { name: "", summary: "test_POST", duration: -1, steps: ["test_POST"], tags: ["test_POST"], createdBy:"test_POST", imageUrl:"test_POST" }
+let recipePOSTWrongDurationAndSummary = { name: "Test", summary: "", duration: -1, steps: ["test_POST"], tags: ["test_POST"], createdBy:"test_POST", imageUrl:"test_POST" }
+let recipePOSTWrongNameAndSummary = { name: "", summary: "", duration: 1, steps: ["test_POST"], tags: ["test_POST"], createdBy:"test_POST", imageUrl:"test_POST" }
 
-let recipePOST = { name: "test_POST", summary: "test_POST", duration: 1, steps: ["test_POST"], tags: ["test_POST"], createdBy:"test_POST", imageUrl:"test_POST", ingredients:[""] }
-let recipeTestId = { id: "63c2abfd2f771df77136be90", name: "test_POST", summary: "test_POST", duration: 1, steps: ["test_POST"], tags: ["test_POST"], createdBy:"test_POST", imageUrl:"test_POST", ingredients:[""] }
-let recipePUT = { name: "test_UPDATE", summary: "test_UPDATE", duration: 2, steps: ["test_UPDATE"], tags: ["test_UPDATE"], createdBy:"test_UPDATE", imageUrl:"test_UPDATE", ingredients:[""] }
-let recipePUTWrong = { name: "", summary: "", duration: -50, steps: "", tags: "", createdBy:"", imageUrl:30, ingredients:[""]}
+let recipePOST = { name: "test_POST", summary: "test_POST", duration: 1, steps: ["test_POST"], tags: ["test_POST"], createdBy:"test_POST", imageUrl:"test_POST"}
+let recipeTestId = { id: "63c2abfd2f771df77136be90", name: "test_POST", summary: "test_POST", duration: 1, steps: ["test_POST"], tags: ["test_POST"], createdBy:"test_POST", imageUrl:"test_POST" }
+let recipePUT = { name: "test_UPDATE", summary: "test_UPDATE", duration: 2, steps: ["test_UPDATE"], tags: ["test_UPDATE"], createdBy:"test_UPDATE", imageUrl:"test_UPDATE" }
+let recipePUTWrong = { name: "", summary: "", duration: -50, steps: "", tags: "", createdBy:"", imageUrl:30}
 
 const apiURL = "http://localhost:8080"
 const req = {}, res = {};
@@ -43,7 +43,6 @@ describe("Component tests", function() {
                     res.body.should.have.property('tags').eql(recipePOST.tags);
                     res.body.should.have.property('createdBy').eql(recipePOST.createdBy);
                     res.body.should.have.property('imageUrl').eql(recipePOST.imageUrl);
-                    res.body.should.have.property('ingredients').eql(recipePOST.ingredients);
 
                     recipeId = res.body._id;
                     done();
@@ -78,7 +77,6 @@ describe("Component tests", function() {
                     res.body.should.have.property('tags').eql(recipeTestId.tags);
                     res.body.should.have.property('createdBy').eql(recipeTestId.createdBy);
                     res.body.should.have.property('imageUrl').eql(recipeTestId.imageUrl);
-                    res.body.should.have.property('ingredients').eql(recipeTestId.ingredients);
                     done();
                 })
         })
@@ -101,7 +99,7 @@ describe("Component tests", function() {
                     .put('/api/v1/recipes/' + '63c5fd7d8675bfd39256907f')
                     .send(recipePUT)
                     .end((err, res) => {
-                        res.should.have.status(404);
+                        res.should.have.status(400);
                         done();
                     })
             })
@@ -146,7 +144,7 @@ describe("Component tests", function() {
                     .put('/api/v1/recipes')
                     .send(recipePOSTWrongNameAndDuration)
                     .end((err, res) => {
-                        res.body.error!=("Recipe validation failed: name: Name is required, duration: Path `duration` (-1) is less than minimum allowed value (0).");
+                        res.body.error == ("validation failed");
 
                         done();
 
@@ -157,7 +155,7 @@ describe("Component tests", function() {
                     .put('/api/v1/recipes')
                     .send(recipePOSTWrongDurationAndSummary)
                     .end((err, res) => {
-                        res.body.error!=("Recipe validation failed: summary: Path `summary` (``) is shorter than the minimum allowed length (1)., duration: Path `duration` (-1) is less than minimum allowed value (0).");
+                        res.body.error == ("validation failed");
 
                         done();
 
@@ -168,7 +166,7 @@ describe("Component tests", function() {
                     .put('/api/v1/recipes')
                     .send(recipePOSTWrongNameAndSummary)
                     .end((err, res) => {
-                        res.body.error!=("Recipe validation failed: name: Name is required, summary: Path `summary` (``) is shorter than the minimum allowed length (1).");
+                        res.body.error == ("validation failed");
 
                         done();
 
@@ -195,7 +193,7 @@ describe("Component tests", function() {
                     .post('/api/v1/recipes')
                     .send(recipePOSTWrongName)
                     .end((err, res) => {
-                        res.body.error != ("Recipe validation failed: name: Name is required");
+                        res.body.error == ("validation failed");
 
                         done();
 
@@ -207,7 +205,7 @@ describe("Component tests", function() {
                     .post('/api/v1/recipes')
                     .send(recipePOSTWrongSummary)
                     .end((err, res) => {
-                        res.body.error != ("Recipe validation failed: summary: Path `summary` (``) is shorter than the minimum allowed length (1).");
+                        res.body.error == ("validation failed");
 
                         done();
 
@@ -219,7 +217,7 @@ describe("Component tests", function() {
                     .post('/api/v1/recipes')
                     .send(recipePOSTWrongNameAndDuration)
                     .end((err, res) => {
-                        res.body.error!=("Recipe validation failed: name: Name is required, duration: Path `duration` (-1) is less than minimum allowed value (0).");
+                        res.body.error == ("validation failed");
 
                         done();
 
@@ -230,7 +228,7 @@ describe("Component tests", function() {
                     .post('/api/v1/recipes')
                     .send(recipePOSTWrongDurationAndSummary)
                     .end((err, res) => {
-                        res.body.error!=("Recipe validation failed: summary: Path `summary` (``) is shorter than the minimum allowed length (1)., duration: Path `duration` (-1) is less than minimum allowed value (0).");
+                        res.body.error == ("validation failed");
 
                         done();
 
@@ -241,7 +239,7 @@ describe("Component tests", function() {
                     .post('/api/v1/recipes')
                     .send(recipePOSTWrongNameAndSummary)
                     .end((err, res) => {
-                        res.body.error!=("Recipe validation failed: name: Name is required, summary: Path `summary` (``) is shorter than the minimum allowed length (1).");
+                        res.body.error == ("validation failed");
 
                         done();
 
@@ -262,11 +260,11 @@ describe("Component tests", function() {
         })
         describe('/GET Negative recipes', () => {
 
-            it('should not get Recipe bc wrong id', (done) => {
+            it('should not get Recipe bc wrong id formation', (done) => {
                 chai.request(apiURL)
                     .get('/api/v1/recipes/' + "ffff")
                     .end((err, res) => {
-                        res.should.have.status(500);
+                        res.should.have.status(400);
                         done();
                     })
             })
@@ -275,7 +273,7 @@ describe("Component tests", function() {
                 chai.request(apiURL)
                     .get('/api/v1/recipes/' + fakeRecipeId)
                     .end((err, res) => {
-                        res.should.have.status(500);
+                        res.should.have.status(404);
                         done();
                     })
             })
