@@ -1,5 +1,6 @@
 import { CircuitBreaker } from "../../circuitBreaker/circuitBreaker.js";
 import { stub } from 'sinon';
+import axios from 'axios';
 
 export default {
     circuitBreaker,
