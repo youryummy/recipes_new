@@ -45,8 +45,6 @@ describe("Component tests", function() {
                     recipe.imageUrl==(recipePOST.imageUrl);
                     res.should.have.status(201);
 
-
-                    recipeId = recipe_id;
                     done();
 
                 })
@@ -58,10 +56,12 @@ describe("Component tests", function() {
             chai.request(apiURL)
                 .get('/api/v1/recipes')
                 .end((err, res) => {
+                    console.log(res.body[0])
                     res.should.have.status(200);
                     res.body.should.be.a('array');
                     console.log("Result length: " + res.body.length)
                     chai.expect(res.body).to.have.length.greaterThan(0);
+                    recipeId=res.body[0]._id
                     done();
                 })
         })
