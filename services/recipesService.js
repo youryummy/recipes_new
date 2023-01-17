@@ -2,6 +2,13 @@ import Recipe from "../mongo/Recipe.js";
 import mongoose from "mongoose";
 import { logger } from "@oas-tools/commons";
 import axios from "axios";
+import recachegoose from "recachegoose";
+import { CircuitBreaker } from "../circuitBreaker/circuitBreaker.js";
+
+recachegoose(mongoose, {
+  engine: 'memory'
+});
+
 
 export async function get(_req, res) {
   const username = res.locals.oas.params?.username;
@@ -19,7 +26,7 @@ export async function get(_req, res) {
       error = err;
     });
   } else {  // Return all recipes from db
-    await Recipe.find({}).then((recipes) => {
+    await Recipe.find({}).cache(10).then((recipes) => {
       recipesResult = [...recipes];
     }).catch((err) => {
       logger.error("Could not fetch recipes", err.message);
@@ -46,7 +53,7 @@ export async function get(_req, res) {
 
 export function post(req, res) {
   const recipe = new Recipe(req.body);
-  recipe.save().then(() => {
+  CircuitBreaker.getBreaker(Recipe).fire("create", recipe).then(() => {
     res.status(201).send();
   }).catch((err) => {
     logger.error(`Could not save recipe: ${err.message}`);
@@ -63,7 +70,7 @@ export function getById(_req, res) {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     res.status(400).send({ message: "Invalid ID" });
   } else {
-    Recipe.findById(id).then((r) => {
+    CircuitBreaker.getBreaker(Recipe).fire("findById", { _id: id }).then((r) => {
       if (r) {
         res.send(r);
       } else {
@@ -81,7 +88,7 @@ export function update(_req, res) {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     res.status(400).send({ message: "Invalid ID" });
   } else {
-    Recipe.findByIdAndUpdate(id, res.locals.oas.body, { runValidators: true }).then(oldRecipe => {
+    CircuitBreaker.getBreaker(Recipe).fire("findByIdAndUpdate", { _id: id }, res.locals.oas.body, { runValidators: true }).then((oldRecipe) => {
       if (!oldRecipe) res.status(404).send({ message: "Recipe not found" });
       else res.status(204).send();
     }).catch((err) => {
@@ -100,7 +107,7 @@ export function remove(_req, res) {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     res.status(400).send({ message: "Invalid ID" });
   } else {
-    Recipe.findByIdAndDelete(id).then(() => {
+    CircuitBreaker.getBreaker(Recipe).fire("findByIdAndDelete", { _id: id }).then((result) => {
       res.status(204).send();
     }).catch((err) => {
       logger.error(`Could not delete recipe: ${err.message}`);
