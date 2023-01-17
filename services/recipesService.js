@@ -38,21 +38,23 @@ export async function get(_req, res) {
   if (error) {
     res.status(500).send({ message: "Unexpected Error ocurred, try again later" });
   } else {
-    recipesResult = recipesResult.map((r) => {
+    Promise.all(recipesResult.map(async (r) => {
       return {
         ...r._doc,
-        ingredients: r.ingredients?.map(async (ingredient) => {
-          await axios.get(`http://youryummy-ingredients-service/api/v1/ingredients/${ingredient}`).catch((err) => logger.warn((`Could not fetch ingredient ${ingredient}: ${err.message}`)));
-        }).filter((i) => i !== undefined) ?? []
+        ingredients: await Promise.all(r.ingredients?.map((ingredient) => axios.get(`http://youryummy-ingredients-service/api/v1/ingredients/${ingredient}`))).then(arr => arr.map((i) => i.data)).catch((err) => {logger.warn("Could not fetch ingredients", err.message); return []})
       }
+    }))
+    .then((result) => res.send(result))
+    .catch(() => {
+      res.status(500).send({ message: "Unexpected Error ocurred, try again later" });
     });
-
-    res.send(recipesResult);
   }
 }
 
 export function post(req, res) {
-  const recipe = new Recipe(req.body);
+  let recipe = res.locals.oas.body;
+  recipe.ingredients = recipe.ingredients?.map((i) => i._id) ?? [];
+  recipe = new Recipe(recipe);
   CircuitBreaker.getBreaker(Recipe).fire("create", recipe).then(() => {
     res.status(201).send();
   }).catch((err) => {
@@ -70,9 +72,11 @@ export function getById(_req, res) {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     res.status(400).send({ message: "Invalid ID" });
   } else {
-    CircuitBreaker.getBreaker(Recipe).fire("findById", { _id: id }).then((r) => {
+    CircuitBreaker.getBreaker(Recipe).fire("findById", { _id: id }).then(async (r) => {
       if (r) {
-        res.send(r);
+        r.ingredients = await Promise.all(r.ingredients?.map((ingredient) => axios.get(`http://youryummy-ingredients-service/api/v1/ingredients/${ingredient}`))).then(arr => arr.map((i) => i.data)).catch((err) => {logger.warn("Could not fetch ingredients", err.message); return []})
+        console.log("r: ", r)
+        res.send(r)
       } else {
         res.status(404).send({ message: "Recipe not found" });
       }
@@ -80,7 +84,7 @@ export function getById(_req, res) {
       logger.error(`Could not fetch recipe: ${err.message}`);
       res.status(500).send({ message: "Unexpected Error ocurred, try again later" });
     });
-  }
+  } 
 }
 
 export function update(_req, res) {
