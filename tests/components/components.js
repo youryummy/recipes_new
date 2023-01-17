@@ -1,5 +1,6 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
+import Recipe from "../../mongo/Recipe.js";
 
 chai.use(chaiHttp);
 chai.should();
@@ -29,22 +30,23 @@ describe("Component tests", function() {
 
 
     describe('/POST Recipes', () => {
-        it('should add a recipe', (done) => {
+        it('should add a recipe',  (done) => {
             chai.request(apiURL)
                 .post('/api/v1/recipes')
                 .send(recipePOST)
-                .end((err, res) => {
-                    console.log(res.error)
-                    res.body.should.be.a('object');
-                    res.body.should.have.property('name').eql(recipePOST.name);
-                    res.body.should.have.property('summary').eql(recipePOST.summary);
-                    res.body.should.have.property('duration').eql(recipePOST.duration);
-                    res.body.should.have.property('steps').eql(recipePOST.steps);
-                    res.body.should.have.property('tags').eql(recipePOST.tags);
-                    res.body.should.have.property('createdBy').eql(recipePOST.createdBy);
-                    res.body.should.have.property('imageUrl').eql(recipePOST.imageUrl);
+                .end(async (err, res) => {
+                    var recipe = await Recipe.find({ name: 'test_POST' });
+                    recipe.name==(recipePOST.name);
+                    recipe.summary==(recipePOST.summary);
+                    recipe.duration==(recipePOST.duration);
+                    recipe.steps==(recipePOST.steps);
+                    recipe.tags==(recipePOST.tags);
+                    recipe.createdBy==(recipePOST.createdBy);
+                    recipe.imageUrl==(recipePOST.imageUrl);
+                    res.should.have.status(201);
 
-                    recipeId = res.body._id;
+
+                    recipeId = recipe_id;
                     done();
 
                 })
@@ -87,9 +89,17 @@ describe("Component tests", function() {
                 chai.request(apiURL)
                     .put('/api/v1/recipes/' + recipeId)
                     .send(recipePUT)
-                    .end((err, res) => {
-                        res.should.have.status(201);
-                        res.body.should.be.a('object');
+                    .end(async (err, res) => {
+                        var recipe = await Recipe.find({name: 'test_UPDATE'});
+                        recipe.name == (recipePUT.name);
+                        recipe.summary == (recipePUT.summary);
+                        recipe.duration == (recipePUT.duration);
+                        recipe.steps == (recipePUT.steps);
+                        recipe.tags == (recipePUT.tags);
+                        recipe.createdBy == (recipePUT.createdBy);
+                        recipe.imageUrl == (recipePUT.imageUrl);
+
+                        res.should.have.status(204);
                         done();
                     })
             })
