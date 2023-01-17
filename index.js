@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import server from './server.js';
+import axios from 'axios';
 
 // Node environment
 const env = process.env.NODE_ENV ? process.env.NODE_ENV : 'production';

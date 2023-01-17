@@ -2,6 +2,7 @@ import { logger } from "@oas-tools/commons";
 import mongoose from "mongoose";
 import server from '../server.js';
 import Recipe from "../mongo/Recipe.js";
+import axios from 'axios';
 
 logger.configure({ level: "off" });
 process.env.NODE_ENV = "test";
