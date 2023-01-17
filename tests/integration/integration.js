@@ -5,28 +5,27 @@ import sinonChai from 'sinon-chai';
 chai.use(sinonChai);
 
 const recipeController = {
-    find: sinon.stub().resolves(),
-    create: sinon.stub().resolves(),
-    findById: sinon.stub().resolves(),
-    findByIdAndUpdate: sinon.stub().resolves(),
-    findByIdAndDelete: sinon.stub().resolves(),
-    deleteMany: sinon.stub().resolves()
+    get: sinon.stub().resolves(),
+    post: sinon.stub().resolves(),
+    getById: sinon.stub().resolves(),
+    update: sinon.stub().resolves(),
+    remove: sinon.stub().resolves(),
 };
 describe('recipesController tests', () => {
-    describe('recipeController.find()', () => {
-        it('should call recipeController.find() with the correct arguments', async () => {
+    describe('recipeController.get()', () => {
+        it('should call recipeController.get() with the correct arguments', async () => {
 
 
             const res = {
                 send: sinon.stub()
             };
 
-            await recipeController.find(res);
-            expect(recipeController.find).to.have.been.calledWith(res);
+            await recipeController.get(res);
+            expect(recipeController.get).to.have.been.calledWith(res);
         });
     });
 
-    describe('recipesController.create()', () => {
+    describe('recipesController.post()', () => {
         it('should call recipesService.create() with the correct arguments', () => {
             const req = {
                 body: {
@@ -38,14 +37,14 @@ describe('recipesController tests', () => {
                 send: sinon.stub()
             };
 
-            recipeController.create(req, res);
+            recipeController.post(req, res);
 
-            expect(recipeController.create).to.have.been.calledWith(req, res);
+            expect(recipeController.post).to.have.been.calledWith(req, res);
         });
     });
 
-    describe('recipeController.findById()', () => {
-        it('should call recipesService.findById() with the correct arguments', async () => {
+    describe('recipeController.getById()', () => {
+        it('should call recipesService.getById() with the correct arguments', async () => {
             const req = {
                 params: {
                     id: '12345'
@@ -56,13 +55,13 @@ describe('recipesController tests', () => {
                 send: sinon.stub()
             };
 
-            await recipeController.findById(req, res);
-            expect(recipeController.findById).to.have.been.calledWith(req, res);
+            await recipeController.getById(req, res);
+            expect(recipeController.getById).to.have.been.calledWith(req, res);
         });
     });
 
-    describe('recipesController.findByIdAndUpdate()', () => {
-        it('should call recipesService.findByIdAndUpdate() with the correct arguments', async () => {
+    describe('recipesController.update()', () => {
+        it('should call recipesService.update() with the correct arguments', async () => {
             const req = {
                 params: {
                     id: '12345'
@@ -76,13 +75,13 @@ describe('recipesController tests', () => {
                 send: sinon.stub()
             };
 
-            await recipeController.findByIdAndUpdate(req, res);
-            expect(recipeController.findByIdAndUpdate).to.have.been.calledWith(req, res);
+            await recipeController.update(req, res);
+            expect(recipeController.update).to.have.been.calledWith(req, res);
         });
     });
 
-    describe('recipesController.findByIdAndDelete()', () => {
-        it('should call recipesService.findByIdAndDelete() with the correct arguments', async () => {
+    describe('recipesController.remove()', () => {
+        it('should call recipesService.remove() with the correct arguments', async () => {
             const req = {
                 params: {
                     id: '12345'
@@ -93,21 +92,8 @@ describe('recipesController tests', () => {
                 send: sinon.stub()
             };
 
-            await recipeController.findByIdAndDelete(req, res);
-            expect(recipeController.findByIdAndDelete).to.have.been.calledWith(req, res);
-        });
-    });
-
-    describe('recipesController.deleteMany()', () => {
-        it('should call recipesService.deleteMany() with the correct arguments', async () => {
-
-
-            const res = {
-                send: sinon.stub()
-            };
-
-            await recipeController.deleteMany(res);
-            expect(recipeController.deleteMany).to.have.been.calledWith(res);
+            await recipeController.remove(req, res);
+            expect(recipeController.remove).to.have.been.calledWith(req, res);
         });
     });
 });
