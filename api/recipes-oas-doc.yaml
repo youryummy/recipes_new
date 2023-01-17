@@ -1,0 +1,221 @@
+openapi: 3.0.3
+info:
+  title: Recipes
+  description: Recipes service for YourYummy! app
+  version: "1.0"
+
+paths:
+  /api/v1/recipes:
+    x-router-controller: recipesController
+    get:
+      operationId: getRecipes
+      security:
+        - apikey: []
+      description: Get all recipes and extract Tasty! recipes if not called before
+      parameters:
+        - name: username
+          description: username
+          in: query
+          schema:
+            type: string
+        - name: plan
+          description: plan
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Got all recipes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/recipe'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    post:
+      operationId: createRecipe
+      security:
+        - apikey: []
+      description: Create a new recipe
+      requestBody:
+        description: Recipe to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/recipe'
+      responses:
+        "201":
+          description: Recipe created
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /api/v1/recipes/{id}:
+    x-router-controller: recipesController
+    get:
+      operationId: findRecipe
+      security:
+        - apikey: []
+      description: Get a recipe
+      parameters:
+      - name: id
+        in: path
+        required: true
+        x-acl-binding: recipeIds
+        description: Recipe id
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Got a recipe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recipe'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    put:
+      operationId: editRecipe
+      security:
+        - apikey: []
+      description: Edit an actual recipe
+      parameters:
+      - name: id
+        in: path
+        x-acl-binding: recipeIds
+        required: true
+        description: Recipe id
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/recipe'
+      responses:
+        "204":
+          description: Recipe edited
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    delete:
+      operationId: deleteRecipe
+      security:
+        - apikey: []
+      description: Delete all recipes
+      parameters:
+      - name: id
+        x-acl-binding: recipeIds
+        in: path
+        description: idRecipe
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Recipe deleted
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+components:
+  schemas:
+    recipe:
+      type: object
+      properties:
+        summary:
+          type: string
+        duration:
+          type: integer
+        name:
+          type: string
+        steps:
+          type: array
+          items:
+            type: string
+        tags:
+          type: array
+          items:
+            type: string
+        imageUrl:
+          type: string
+        createdBy:
+          type: string
+        ingredients:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+    error:
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          type: string
+      additionalProperties: true
+  
+  securitySchemes:
+    apikey:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      x-acl-config:
+        user:
+          api/v1/recipes:
+            "read:any": ["*"]
+            "create:any": ["*"]
+          api/v1/recipes/{id}:
+            "read:any": ["*"]
+            "update:own": ["*"]
+            "delete:own": ["*"]
+        admin:
+          api/v1/recipes:
+            "read:any": ["*"]
+            "create:any": ["*"]
+          api/v1/recipes/{id}:
+            "read:any": ["*"]
+            "update:any": ["*"]
+            "delete:any": ["*"]

@@ -1,0 +1,21 @@
+{
+    "name": "youryummy!-recipes",
+    "version": "1.0",
+    "description": "Recipes service for YourYummy! app",
+    "license": "UNLICENSED",
+    "type": "module",
+    "private": true,
+    "main": "index.js",
+    "scripts": {
+        "prestart": "npm install --only=prod",
+        "start": "node index.js",
+        "build": "docker build . -t youryummy!-recipes:1.0 -t youryummy!-recipes:latest"
+    },
+    "dependencies": {
+        "@oas-tools/core": "^3.0.0",
+        "axios": "^1.2.2",
+        "express": "^4.18.0",
+        "lodash": "^4.17.21",
+        "mongoose": "^6.8.3"
+    }
+}
