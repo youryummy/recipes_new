@@ -15,6 +15,7 @@
     },
     "dependencies": {
         "@oas-tools/core": "^3.0.0",
+        "axios": "^1.2.2",
         "chai": "^4.3.7",
         "chai-http": "^4.3.0",
         "dotenv": "^16.0.3",
