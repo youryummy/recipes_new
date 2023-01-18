@@ -23,6 +23,12 @@ paths:
           in: query
           schema:
             type: string
+        - name: cache
+          description: cache response
+          in: query
+          schema:
+            type: boolean
+            default: false
       responses:
         "200":
           description: Got all recipes

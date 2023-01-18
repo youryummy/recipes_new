@@ -12,6 +12,7 @@ recachegoose(mongoose, {
 
 export async function get(_req, res) {
   const username = res.locals.oas.params?.username;
+  const cache = res.locals.oas.params?.cache;
   const plan = res.locals.oas.params?.plan;
   
   let error;
@@ -26,7 +27,10 @@ export async function get(_req, res) {
       error = err;
     });
   } else {  // Return all recipes from db
-    await Recipe.find({}).cache(10).then((recipes) => {
+    const query = Recipe.find({});
+    if (cache) query = query.cache(10);
+
+    await query.then((recipes) => {
       recipesResult = [...recipes];
     }).catch((err) => {
       logger.error("Could not fetch recipes", err.message);
