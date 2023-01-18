@@ -1,53 +1,52 @@
-name: Node.js CI
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: youryummy-{{ .Chart.Name }}
+  name: youryummy-{{ .Chart.Name }}
+  namespace: {{ if .Values.global.namespaceOverride }}{{.Values.global.namespaceOverride}}{{ else }}youryummy{{ end }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: youryummy-{{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: youryummy-{{ .Chart.Name }}
+    spec:
+      containers:
+        - env:
+            - name: PORT
+              value: "80"
+            - name: MONGO_HOST
+              value: {{ (index .Values .Chart.Name).mongo_host | default .Values.mongo_host }}
+            - name: MONGO_PORT
+              value: "{{ (index .Values .Chart.Name).mongo_port | default .Values.mongo_port }}"
+            - name: MONGO_DBNAME
+              value: {{ (index .Values .Chart.Name).mongo_dbname | default .Values.mongo_dbname }}
+            - name: MONGO_USER
+              value: {{ (index .Values .Chart.Name).mongo_user | default .Values.mongo_user }}
+            - name: MONGO_PROTO
+              value: {{ (index .Values .Chart.Name).mongo_proto | default .Values.mongo_proto }}
+          {{- if (index .Values .Chart.Name).mongo_pwd}}
+          - name: MONGO_PWD
+            valueFrom:
+              secretKeyRef:
+                name: youryummy-{{ .Chart.Name }}-secrets
+                key: MONGO_PWD
+          {{- end}}
 
-on:
-  push:
-    branches: [ main, develop ]
-    paths-ignore:
-      - '**/*.md'
-  pull_request:
-    branches: [ main, develop ]
-    paths-ignore:
-      - '**/*.md'
-
-jobs:
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 16.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16.x
-      - name: Install dependencies
-        run: npm ci
-      - name: Run docker compose
-        run: docker-compose -f "./.github/docker-compose.yaml" up -d --build
-      - name: Run tests
-        run: npm test
-        env:
-          CI: true
-
-  oktetoRelease:
-      name: Deploy to Okteto
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v2
-        - name: Okteto Login
-          uses: okteto/login@latest
-          with:
-            token: ${{ secrets.OKTETO_TOKEN }}
-        - name: Okteto Deploy
-          uses: okteto/pipeline@latest
-          with:
-            name: recipes
-            namespace: youryummy-maribelrb22
-            variables: >-
-              NODE_ENV=production,
-              NAMESPACE=youryummy-maribelrb22,
-              MONGO_PROTO=mongodb+srv,
-              MONGO_HOST=cluster0.2n6tvhy.mongodb.net,
-              MONGO_USER=YourYummy,
-              MONGO_PWD=KBGnT6WYuSEMFiJK,
-              MONGO_DBNAME=recipes,
+          image: {{ (index .Values .Chart.Name).image | default .Values.image }}
+          imagePullPolicy: IfNotPresent
+          name: youryummy-{{ .Chart.Name }}
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          resources:
+            requests:
+              memory: 300Mi
+            limits:
+              memory: 400Mi
+      securityContext: {}

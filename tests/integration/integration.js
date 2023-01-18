@@ -29,7 +29,13 @@ describe('recipesController tests', () => {
         it('should call recipesService.create() with the correct arguments', () => {
             const req = {
                 body: {
-                    search: 'Cheese'
+                    name: "test_POST",
+                    summary: "test_POST",
+                    duration: 1,
+                    steps: ["test_POST"],
+                    tags: ["test_POST"],
+                    createdBy:"test_POST",
+                    imageUrl:"test_POST"
                 }
             };
 
@@ -47,7 +53,7 @@ describe('recipesController tests', () => {
         it('should call recipesService.getById() with the correct arguments', async () => {
             const req = {
                 params: {
-                    id: '12345'
+                    id: '63c5fd7d8675bfd39256907f'
                 }
             };
 
@@ -64,10 +70,16 @@ describe('recipesController tests', () => {
         it('should call recipesService.update() with the correct arguments', async () => {
             const req = {
                 params: {
-                    id: '12345'
+                    id: '63c5fd7d8675bfd39256907f'
                 },
                 body: {
-                    search: 'Cheese'
+                    name: "test_UPDATE",
+                    summary: "test_UPDATE",
+                    duration: 1,
+                    steps: ["test_UPDATE"],
+                    tags: ["test_UPDATE"],
+                    createdBy:"test_UPDATE",
+                    imageUrl:"test_UPDATE"
                 }
             };
 
@@ -84,7 +96,7 @@ describe('recipesController tests', () => {
         it('should call recipesService.remove() with the correct arguments', async () => {
             const req = {
                 params: {
-                    id: '12345'
+                    id: '63c5fd7d8675bfd39256907f'
                 }
             };
 

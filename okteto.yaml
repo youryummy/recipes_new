@@ -3,7 +3,7 @@ build:
     context: .
 
 deploy:
-  - helm upgrade --install recipesbook-service chart
+  - helm upgrade --install recipes-service chart
     --set global.node_env=${NODE_ENV}
     --set global.namespaceOverride=${NAMESPACE}
     --set recipes-service.mongo_pwd=${MONGO_PWD}
@@ -13,4 +13,4 @@ deploy:
     --set recipes-service.mongo_port=${MONGO_PORT}
     --set recipes-service.mongo_proto=${MONGO_PROTO}
     --set recipes-service.mongo_dbname=${MONGO_DBNAME}
-    --set recipes-service.image=${OKTETO_BUILD_RECIPESBOOK_SERVICE_IMAGE}
+    --set recipes-service.image=${OKTETO_BUILD_RECIPES_SERVICE_IMAGE}
