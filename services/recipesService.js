@@ -74,9 +74,10 @@ export function getById(_req, res) {
   } else {
     CircuitBreaker.getBreaker(Recipe).fire("findById", { _id: id }).then(async (r) => {
       if (r) {
-        r.ingredients = await Promise.all(r.ingredients?.map((ingredient) => axios.get(`http://youryummy-ingredients-service/api/v1/ingredients/${ingredient}`))).then(arr => arr.map((i) => i.data)).catch((err) => {logger.warn("Could not fetch ingredients", err.message); return []})
-        console.log("r: ", r)
-        res.send(r)
+        res.send({
+          ...r._doc,
+          ingredients: await Promise.all(r.ingredients?.map((ingredient) => axios.get(`http://youryummy-ingredients-service/api/v1/ingredients/${ingredient}`))).then(arr => arr.map((i) => i.data)).catch((err) => {logger.warn("Could not fetch ingredients", err.message); return []})
+        });
       } else {
         res.status(404).send({ message: "Recipe not found" });
       }
