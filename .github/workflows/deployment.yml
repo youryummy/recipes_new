@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run docker compose
-        run: docker-compose -f "./.github/workflows/docker-compose.yaml" up -d --build
+        run: docker-compose -f "./.github/docker-compose.yaml" up -d --build
       - name: Run tests
         run: npm test
         env:
