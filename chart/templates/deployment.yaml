@@ -30,20 +30,10 @@ spec:
             value: {{ (index .Values .Chart.Name).mongo_user | default .Values.mongo_user }}
           - name: MONGO_PROTO
             value: {{ (index .Values .Chart.Name).mongo_proto | default .Values.mongo_proto }}
-          {{- if (index .Values .Chart.Name).mongo_pwd}}
           - name: MONGO_PWD
-            valueFrom:
-              secretKeyRef:
-                  name: youryummy-{{ .Chart.Name }}-secrets
-                  key: MONGO_PWD
-          {{- end}}
-          {{- if (index .Values .Chart.Name).rapidapi_key}}
+            value: {{ (index .Values .Chart.Name).mongo_pwd | default .Values.mongo_pwd }}
           - name: RAPIDAPI_KEY
-            valueFrom:
-              secretKeyRef:
-                  name: youryummy-{{ .Chart.Name }}-secrets
-                  key: RAPIDAPI_KEY
-          {{- end}}
+            value: {{ (index .Values .Chart.Name).rapidapi_key | default .Values.rapidapi_key }}
 
           image: {{ (index .Values .Chart.Name).image | default .Values.image }}
           imagePullPolicy: IfNotPresent
