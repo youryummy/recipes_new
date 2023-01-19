@@ -3,7 +3,7 @@ build:
     context: .
 
 deploy:
-  - helm upgrade --install recipesbook-service chart
+  - helm upgrade --install recipes-service chart
     --set global.node_env=${NODE_ENV}
     --set global.namespaceOverride=${NAMESPACE}
     --set recipes-service.mongo_pwd=${MONGO_PWD}
