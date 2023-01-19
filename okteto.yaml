@@ -9,7 +9,6 @@ deploy:
     --set recipes-service.mongo_pwd=${MONGO_PWD}
     --set recipes-service.mongo_user=${MONGO_USER}
     --set recipes-service.mongo_host=${MONGO_HOST}
-    --set recipes-service.mongo_url=${MONGO_URL}
     --set recipes-service.mongo_port=${MONGO_PORT}
     --set recipes-service.mongo_proto=${MONGO_PROTO}
     --set recipes-service.mongo_dbname=${MONGO_DBNAME}
