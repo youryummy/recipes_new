@@ -3,7 +3,7 @@ kind: Service
 metadata:
   labels:
     app: youryummy-{{ .Chart.Name }}
-  name: youryummy-{{ .Chart.Name }}
+  name: recipes
   namespace: {{ if .Values.global.namespaceOverride }}{{.Values.global.namespaceOverride}}{{ else }}youryummy{{ end }}
 spec:
   {{- if eq .Values.global.node_env "development" }}
