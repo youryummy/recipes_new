@@ -115,7 +115,7 @@ describe("Component tests", function() {
                     })
             })
 
-            it('should not add a recipe with wrong name', (done) => {
+            it('should not update a recipe with wrong name', (done) => {
                 chai.request(apiURL)
                     .put('/api/v1/recipes' + recipeId)
                     .send(recipePOSTWrongName)
@@ -126,7 +126,7 @@ describe("Component tests", function() {
                     })
             })
 
-            it('should not add a recipe with wrong summary', (done) => {
+            it('should not update a recipe with wrong summary', (done) => {
                 chai.request(apiURL)
                     .put('/api/v1/recipes' + recipeId)
                     .send(recipePOSTWrongSummary)
@@ -150,7 +150,7 @@ describe("Component tests", function() {
                     })
             })
 
-            it('should not add a recipe with wrong name and duration', (done) => {
+            it('should not update a recipe with wrong name and duration', (done) => {
                 chai.request(apiURL)
                     .put('/api/v1/recipes')
                     .send(recipePOSTWrongNameAndDuration)
@@ -161,7 +161,7 @@ describe("Component tests", function() {
 
                     })
             })
-            it('should not add a recipe with wrong duration and summary', (done) => {
+            it('should not update a recipe with wrong duration and summary', (done) => {
                 chai.request(apiURL)
                     .put('/api/v1/recipes')
                     .send(recipePOSTWrongDurationAndSummary)
@@ -172,7 +172,7 @@ describe("Component tests", function() {
 
                     })
             })
-            it('should not add a recipe with wrong name and summary', (done) => {
+            it('should not update a recipe with wrong name and summary', (done) => {
                 chai.request(apiURL)
                     .put('/api/v1/recipes')
                     .send(recipePOSTWrongNameAndSummary)
